@@ -1,3 +1,6 @@
+ This workflow will build a Java project with Ant. Kindly enhance it, making it a lot more efficient
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-ant
+
 name: Java CI
 
 on:
@@ -8,32 +11,15 @@ on:
 
 jobs:
   build:
+
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        java-version: [11, 17] # Test against Java 11 and Java 17
-
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 1 # Improve performance by limiting the checkout depth
-
-    - name: Set up JDK ${{ matrix.java-version }}
+    - uses: actions/checkout@v4
+    - name: Set up JDK 11
       uses: actions/setup-java@v3
       with:
-        java-version: ${{ matrix.java-version }}
+        java-version: '11'
         distribution: 'temurin'
-        cache: 'maven' # Caches Maven dependencies for improved performance
-
-    - name: Cache Ant dependencies
-      uses: actions/cache@v3
-      with:
-        path: ~/.ant/cache
-        key: ${{ runner.os }}-ant-${{ hashFiles('build.xml') }}
-        restore-keys: |
-          ${{ runner.os }}-ant-
-
     - name: Build with Ant
       run: ant -noinput -buildfile build.xml
