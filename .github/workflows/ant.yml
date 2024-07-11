@@ -26,6 +26,20 @@ jobs:
         java-version: '11'
         distribution: 'temurin'
         fetch-depth: 1 # Limiting checkout depth -> improves efficiency 
-        cache: 'maven' # Cache Maven dependencies 
+
+    - name: Set up JDK ${{ matrix.java-version }}
+      uses: actions/setup-java@v3
+      with:
+        java-version: ${{ matrix.java-version }}
+        distribution: 'temurin'
+        cache: 'maven' # Cache Maven dependecies 
+    
+    - name: Cache Ant dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.ant/cache
+        key: ${{ runner.os }}-ant-${{ hashFiles('build.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-ant-
     - name: Build with Ant
       run: ant -noinput -buildfile build.xml
